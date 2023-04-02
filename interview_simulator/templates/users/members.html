@@ -1,0 +1,10 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Welcome {{ current_user.username }}</h1>
+        <h3>This is the members-only page.</h3>
+        <a href="{{ url_for('user.upload') }}" class="btn btn-primary">Upload Resume and Job Description</a>
+    </div>
+{% endblock %}
+

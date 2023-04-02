@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Welcome back, {{ current_user.username }}!</h1>
+        <p>Please press the button to begin your interview.</p>
+
+    
+        <h2>Talk to HiringManagerGPT</h2>
+        <button id="recordButton">Record</button>
+        <ul id="recordingsList"></ul>
+
+        <script>
+        const recordButton = document.getElementById('recordButton');
+        const recordingsList = document.getElementById('recordingsList');
+
+        let chunks = [];
+        let mediaRecorder;
+
+        recordButton.onclick = async () => {
+            if (recordButton.textContent === 'Record') {
+            // Request access to the microphone
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            // Create a new MediaRecorder instance
+            mediaRecorder = new MediaRecorder(stream);
+
+            // Start recording and save the data to the 'chunks' array
+            mediaRecorder.start();
+            mediaRecorder.ondataavailable = (e) => {
+                chunks.push(e.data);
+            };
+
+            // Update the button text and enable/disable buttons
+            recordButton.textContent = 'Stop';
+            recordingsList.innerHTML = '';
+            } else {
+            // Stop the MediaRecorder and process the recorded data
+            mediaRecorder.stop();
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+
+                // Get the CSRF token from the HTML form
+                const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                // Create a new FormData object and append the audio file and CSRF token
+                const formData = new FormData();
+                formData.append('audio', blob, 'recording.webm');
+                formData.append('csrf_token', csrfToken);
+
+                // Send the audio file and CSRF token to the server
+                fetch('/users/transcribe', {
+                method: 'POST',
+                body: formData,
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Handle the transcribed text, e.g., display it on the page
+                    console.log(data.transcription);
+                    // Set the value of the input_text field in the form
+                    const inputTextField = document.querySelector('#chat_gpt_form textarea[name="input_text"]');
+                    inputTextField.value = data.transcription;
+
+                    // Submit the form programmatically
+                    const chatGPTForm = document.getElementById('chat_gpt_form');
+                    chatGPTForm.submit();
+                })
+                .catch((error) => {
+                    console.error('Error uploading audio:', error);
+                });
+
+                // Reset the state
+                chunks = [];
+                recordButton.textContent = 'Record';
+            };
+            }
+        };
+        </script>
+
+        <form id="chat_gpt_form" method="POST" action="{{ url_for('user.home_logged_in') }}">
+            {{ form.csrf_token }}
+            {{ form.input_text.label }}<br>
+            {{ form.input_text(size=100) }}<br>
+            <input type="submit" value="Submit">
+        </form>
+            
+        {% if gpt_response %}
+            <p>{{ gpt_response }}</p>
+            {% if audio_filename %}
+                <audio controls autoplay>
+                    <source src="{{ url_for('static', filename=audio_filename) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            {% endif %}
+        {% endif %}
+        
+
+        <!-- <form method="POST" action="{{ url_for('user.home_logged_in') }}">
+            {{ form.csrf_token }}
+            {{ form.input_text.label }}<br>
+            {{ form.input_text(size=100) }}<br>
+            <input type="submit" value="Submit">
+        </form>
+
+        {% if gpt_response %}
+            <p>{{ gpt_response }}</p>
+            {% if audio_filename %}
+                <audio controls autoplay>
+                    <source src="{{ url_for('static', filename=audio_filename) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            {% endif %}
+        {% endif %} -->
+    </div>
+{% endblock %}

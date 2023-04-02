@@ -1,0 +1,147 @@
+
+    <h3>Chat with ChatGPT:</h3>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.input_text.label }}
+                {{ form.input_text(rows=4, class="form-control") }}
+            </div>
+            <br>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+
+        {% if gpt_response %}
+            <br>
+            <h4>ChatGPT's Response:</h4>
+            <p>{{ gpt_response }}</p>
+        {% endif %}
+
+        {% if audio_base64 %}
+            <audio id="ttsResponse" src="data:audio/mp3;base64,{{ audio_base64 }}" controls hidden></audio>
+        {% endif %}
+        
+
+        <h2>Audio Recorder</h2>
+        <button id="startRecording">Start Recording</button>
+        <button id="stopRecording" disabled>Stop Recording</button>
+        <ul id="recordingsList"></ul>
+
+        <script>
+            const startRecording = document.getElementById('startRecording');
+            const stopRecording = document.getElementById('stopRecording');
+            const recordingsList = document.getElementById('recordingsList');
+
+            let chunks = [];
+            let mediaRecorder;
+
+            startRecording.onclick = async () => {
+                // Request access to the microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Create a new MediaRecorder instance
+                mediaRecorder = new MediaRecorder(stream);
+
+                // Start recording and save the data to the 'chunks' array
+                mediaRecorder.start();
+                mediaRecorder.ondataavailable = (e) => {
+                    chunks.push(e.data);
+                };
+
+                // Enable/disable buttons
+                startRecording.disabled = true;
+                stopRecording.disabled = false;
+            };
+
+            stopRecording.onclick = () => {
+                // Stop the MediaRecorder and process the recorded data
+                mediaRecorder.stop();
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+                    const audioURL = URL.createObjectURL(blob);
+                    const listItem = document.createElement('li');
+                    const audio = document.createElement('audio');
+                    const downloadLink = document.createElement('a');
+
+                    audio.controls = true;
+                    audio.src = audioURL;
+                    downloadLink.href = audioURL;
+                    downloadLink.download = `recording_${new Date().toISOString()}.ogg`;
+                    downloadLink.innerHTML = 'Download';
+
+                    listItem.appendChild(audio);
+                    listItem.appendChild(downloadLink);
+                    recordingsList.appendChild(listItem);
+
+                    // Reset the state
+                    chunks = [];
+                    startRecording.disabled = false;
+                    stopRecording.disabled = true;
+                };
+            };
+        </script>
+    </div>
+
+
+
+
+
+
+
+
+# @blueprint.route('/home_logged_in', methods=["GET", "POST"])
+# @login_required
+# def home_logged_in():
+#     """Home page for logged-in users."""
+#     form = ChatGPTForm()
+#     gpt_response = None
+
+#     if form.validate_on_submit():
+#         input_text = form.input_text.data
+#         gpt_response = chat_gpt(input_text)
+
+#     return render_template('users/home_logged_in.html', form=form, gpt_response=gpt_response)
+
+
+# @blueprint.route('/home_logged_in', methods=["GET", "POST"])
+# @login_required
+# def home_logged_in():
+#     """Home page for logged-in users."""
+#     form = ChatGPTForm()
+#     gpt_response = None
+
+#     if form.validate_on_submit():
+#         input_text = form.input_text.data
+#         gpt_response = chat_gpt(input_text)
+
+#         # Convert the response text to speech
+#         audio_file = text_to_speech(gpt_response)
+
+#         # Save the audio file
+#         with open("response_audio.mp3", "wb") as f:
+#             f.write(audio_file.read())
+
+#         # Play the audio file
+#         os.system("mpg123 response_audio.mp3")
+
+#     return render_template('users/home_logged_in.html', form=form, gpt_response=gpt_response)
+
+
+
+
+
+
+
+// const audioURL = URL.createObjectURL(blob);
+        // const listItem = document.createElement('li');
+        // const audio = document.createElement('audio');
+        // const downloadLink = document.createElement('a');
+
+        // audio.controls = true;
+        // audio.src = audioURL;
+        // downloadLink.href = audioURL;
+        // downloadLink.download = `recording_${new Date().toISOString()}.webm`;
+        // downloadLink.innerHTML = 'Download';
+
+        // listItem.appendChild(audio);
+        // listItem.appendChild(downloadLink);
+        // recordingsList.appendChild(listItem);

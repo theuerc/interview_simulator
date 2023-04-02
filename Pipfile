@@ -1,0 +1,60 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# Flask
+click = ">=7.0"
+Flask = "==2.2.2"
+Werkzeug = "==2.2.2"
+# Database
+Flask-SQLAlchemy = "==3.0.2"
+psycopg2-binary = "==2.9.5"
+SQLAlchemy = "==1.4.45"
+# Migrations
+Flask-Migrate = "==4.0.0"
+# Forms
+email-validator = "==1.3.0"
+Flask-WTF = "==1.0.1"
+WTForms = "==3.0.1"
+# Deployment
+gevent = "==22.10.2"
+gunicorn = ">=19.9.0"
+supervisor = "==4.2.4"
+# Flask Static Digest
+Flask-Static-Digest = "==0.2.1"
+# Auth
+Flask-Bcrypt = "==1.0.1"
+Flask-Login = "==0.6.2"
+# Caching
+Flask-Caching = ">=1.7.2"
+# Debug toolbar
+Flask-DebugToolbar = "==0.13.1"
+# Environment variable parsing
+environs = "==9.5.0"
+openai = "*"
+gcloud = "*"
+google-cloud-texttospeech = "*"
+black = "*"
+mpg123 = "*"
+
+[dev-packages]
+# Testing
+factory-boy = "==3.2.1"
+pdbpp = "==0.10.3"
+pytest = "==7.2.0"
+pytest-cov = "==4.0.0"
+WebTest = "==3.0.0"
+# Lint and code style
+black = "==22.12.0"
+flake8 = "==6.0.0"
+flake8-blind-except = "==0.2.1"
+flake8-debugger = "==4.1.2"
+flake8-docstrings = "==1.6.0"
+flake8-isort = "==6.0.0"
+isort = "==5.11.4"
+pep8-naming = "==0.13.3"
+
+[requires]
+python_version = "3.11"

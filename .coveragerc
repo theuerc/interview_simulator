@@ -1,0 +1,6 @@
+[run]
+source = interview_simulator
+omit = 
+    tests/*
+    autoapp.py
+
