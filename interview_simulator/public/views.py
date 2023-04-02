@@ -9,7 +9,7 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_required, login_user, logout_user, current_user
+from flask_login import current_user, login_required, login_user, logout_user
 
 from interview_simulator.extensions import login_manager
 from interview_simulator.public.forms import LoginForm
@@ -30,7 +30,9 @@ def load_user(user_id):
 def home():
     """Home page."""
     if current_user.is_authenticated:
-        return redirect(url_for('user.home_logged_in'))  # Redirect logged-in users to the new homepage
+        return redirect(
+            url_for("user.home_logged_in")
+        )  # Redirect logged-in users to the new homepage
 
     form = LoginForm(request.form)
     current_app.logger.info("Hello from the home page!")

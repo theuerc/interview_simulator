@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """User forms."""
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, TextAreaField, SubmitField
+from wtforms import PasswordField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from .models import User
@@ -9,7 +9,7 @@ from .models import User
 
 class UploadForm(FlaskForm):
     """Upload form."""
-    
+
     resume_text = TextAreaField("Resume Text", validators=[DataRequired()])
     job_description = TextAreaField("Job Description", validators=[DataRequired()])
     submit = SubmitField("Upload")
@@ -52,7 +52,9 @@ class RegisterForm(FlaskForm):
             return False
         return True
 
+
 class ChatGPTForm(FlaskForm):
     """ChatGPT interaction form."""
+
     input_text = TextAreaField("Type your message:", validators=[DataRequired()])
     submit = SubmitField("Send")

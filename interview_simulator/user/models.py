@@ -5,20 +5,28 @@ import datetime as dt
 from flask_login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from interview_simulator.database import Column, PkModel, db, reference_col, relationship
+from interview_simulator.database import (
+    Column,
+    PkModel,
+    db,
+    reference_col,
+    relationship,
+)
 from interview_simulator.extensions import bcrypt
 
 
 class UserFile(PkModel):
     """Resume and Job Description for a user."""
-    __tablename__ = 'user_files'
+
+    __tablename__ = "user_files"
     file_name = Column(db.String(128), nullable=False)
     file_content = Column(db.Text, nullable=False)
     upload_date = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    user_id = reference_col('users', nullable=False)
-    user = relationship('User', backref='user_files')
+    user_id = reference_col("users", nullable=False)
+    user = relationship("User", backref="user_files")
 
     def __init__(self, file_name, file_content, user, **kwargs):
+        """Create instance."""
         super(UserFile, self).__init__(**kwargs)
         self.file_name = file_name
         self.file_content = file_content
