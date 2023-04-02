@@ -164,3 +164,31 @@
                 </audio>
             {% endif %}
         {% endif %} -->
+
+
+        // Set the value of the input_text field in the form
+                    const inputTextField = document.querySelector('#chat_gpt_form textarea[name="input_text"]');
+                    inputTextField.value = data.transcription;
+
+                    // Submit the form programmatically
+                    const chatGPTForm = document.getElementById('chat_gpt_form');
+                    chatGPTForm.submit();
+
+
+
+                    <form id="chat_gpt_form" method="POST" action="{{ url_for('user.home_logged_in') }}">
+                        {{ form.csrf_token }}
+                        {{ form.input_text.label }}<br>
+                        {{ form.input_text(size=100) }}<br>
+                        <input type="submit" value="Submit">
+                    </form>
+                        
+                    {% if gpt_response %}
+                        <p>{{ gpt_response }}</p>
+                        {% if audio_filename %}
+                            <audio controls autoplay>
+                                <source src="{{ url_for('static', filename=audio_filename) }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        {% endif %}
+                    {% endif %}
