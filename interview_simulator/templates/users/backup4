@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Welcome back, {{ current_user.username }}!</h1>
+    <p>Please press the button to begin your interview.</p>
+    <button id="startGameButton">Start Game</button>
+
+    <form id="transcribeForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    </form>
+
+    <div id="gameContent" style="display: none;">
+        <!-- Add record buttons to the containers -->
+        <div id="introContainer">
+            <h3>Introduction</h3>
+            <div id="introResponse"></div>
+        </div>
+        <button id="recordIntroResponse">Record Response</button>
+        <div id="question1Container">
+            <h3>Question 1</h3>
+            <div id="question1Response"></div>
+        </div>
+        <button id="recordQuestion1Response">Record Response</button>
+        <div id="question2Container">
+            <h3>Question 2</h3>
+            <div id="question2Response"></div>
+        </div>
+        <button id="recordQuestion2Response">Record Response</button>
+        <div id="question3Container">
+            <h3>Question 3</h3>
+            <div id="question3Response"></div>
+        </div>
+        <button id="recordQuestion3Response">Record Response</button>
+    </div>
+    <div id="mainContent">
+        <!-- All the existing content goes here -->
+        <!-- ... -->
+    </div>
+<script>
+    // Add this to your existing script
+    const startGameButton = document.getElementById('startGameButton');
+    const gameContent = document.getElementById('gameContent');
+    const mainContent = document.getElementById('mainContent');
+
+    const introContainer = document.getElementById('introContainer');
+    const question1Container = document.getElementById('question1Container');
+    const question2Container = document.getElementById('question2Container');
+    const question3Container = document.getElementById('question3Container');
+
+    const checkUploadedFiles = async () => {
+        const response = await fetch('/users/check_uploads');
+        const data = await response.json();
+        if (data.uploaded) {
+            // Get the CSRF token from the HTML form
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+            // Fetch the audios from the server
+            const gameResponse = await fetch('/users/start_game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ resume: data.resume, job_description: data.job_description })
+            });
+            const gameData = await gameResponse.json();
+
+            // Create audio elements
+            const introAudio = new Audio(`data:audio/mp3;base64,${gameData.intro_audio}`);
+            const question1Audio = new Audio(`data:audio/mp3;base64,${gameData.question_1_audio}`);
+            const question2Audio = new Audio(`data:audio/mp3;base64,${gameData.question_2_audio}`);
+            const question3Audio = new Audio(`data:audio/mp3;base64,${gameData.question_3_audio}`);
+
+            // Add audio elements to the containers
+            introContainer.appendChild(introAudio);
+            introAudio.controls = true;
+
+            question1Container.appendChild(question1Audio);
+            question1Audio.controls = true;
+
+            question2Container.appendChild(question2Audio);
+            question2Audio.controls = true;
+
+            question3Container.appendChild(question3Audio);
+            question3Audio.controls = true;
+            // Show the game content and hide the main content
+            gameContent.style.display = 'block';
+            mainContent.style.display = 'none';
+        } else {
+            alert('Please upload your resume and job description first.');
+        }
+    };
+
+    const recordResponse = async (responseDivId, buttonId) => {
+        const button = document.getElementById(buttonId);
+        let chunks = [];
+        let mediaRecorder;
+        let isRecording = false;
+
+        const startRecording = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            mediaRecorder.ondataavailable = (e) => {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                const formData = new FormData();
+                formData.append('audio', blob);
+
+                const response = await fetch('/users/transcribe', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+                const transcription = data.transcription;
+                const gptResponse = data.response;
+
+                const responseDiv = document.getElementById(responseDivId);
+                responseDiv.innerHTML = `
+            <p><strong>Your response:</strong> ${transcription}</p>
+            <p><strong>ChatGPT response:</strong> ${gptResponse}</p>
+        `;
+                chunks = [];
+                button.textContent = "Record Response";
+            };
+
+            isRecording = true;
+            button.textContent = "Stop Recording";
+        };
+
+        const stopRecording = () => {
+            mediaRecorder.stop();
+            isRecording = false;
+        };
+
+        if (!isRecordng) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    };
+
+    document
+        .getElementById("recordIntroResponse")
+        .addEventListener("click", () => recordResponse("introResponse", "recordIntroResponse"));
+
+    document
+        .getElementById("recordQuestion1Response")
+        .addEventListener("click", () => recordResponse("question1Response", "recordQuestion1Response"));
+
+    document
+        .getElementById("recordQuestion2Response")
+        .addEventListener("click", () => recordResponse("question2Response", "recordQuestion2Response"));
+
+    document
+        .getElementById("recordQuestion3Response")
+        .addEventListener("click", () => recordResponse("question3Response", "recordQuestion3Response"));
+
+    startGameButton.addEventListener('click', checkUploadedFiles);
+</script>
+</div>
+{% endblock %}
