@@ -26,7 +26,17 @@ class UserFile(PkModel):
     user = relationship("User", backref="user_files")
 
     def __init__(self, file_name, file_content, user, **kwargs):
-        """Create instance."""
+        """
+        Initializes a new instance of the UserFile.
+
+        Args:
+        - file_name (str): The name of the file.
+        - file_content (str): The contents of the file.
+        - user (User): The user that uploaded the file.
+
+        Returns:
+        - None
+        """
         super(UserFile, self).__init__(**kwargs)
         self.file_name = file_name
         self.file_content = file_content
@@ -42,11 +52,24 @@ class Role(PkModel):
     user = relationship("User", backref="roles")
 
     def __init__(self, name, **kwargs):
-        """Create instance."""
+        """
+        Initialize a new instance of Role.
+
+        Args:
+        - name (str): The name of the role.
+
+        Returns:
+        - None
+        """
         super().__init__(name=name, **kwargs)
 
     def __repr__(self):
-        """Represent instance as a unique string."""
+        """
+        Returns a string representation of the Role instance.
+
+        Returns:
+        - A string representing the Role instance.
+        """
         return f"<Role({self.name})>"
 
 
@@ -65,23 +88,54 @@ class User(UserMixin, PkModel):
 
     @hybrid_property
     def password(self):
-        """Hashed password."""
+        """
+        Returns the hashed password of the User.
+
+        Returns:
+        - A string representing the hashed password of the User.
+        """
         return self._password
 
     @password.setter
     def password(self, value):
-        """Set password."""
+        """
+        Sets the password of the User by generating its hash.
+
+        Args:
+        - value (str): The password in plain text that is to be hashed and saved.
+
+        Returns:
+        - None
+        """
         self._password = bcrypt.generate_password_hash(value)
 
     def check_password(self, value):
-        """Check password."""
+        """
+        Verifies whether the password provided matches the hashed password stored for the User.
+
+        Args:
+        - value (str): The password in plain text that is to be verified.
+
+        Returns:
+        - A boolean value indicating whether the provided password matches the stored hashed password.
+        """
         return bcrypt.check_password_hash(self._password, value)
 
     @property
     def full_name(self):
-        """Full user name."""
+        """
+        Returns the full name of the User as a string.
+
+        Returns:
+        - A string representing the full name of the User.
+        """
         return f"{self.first_name} {self.last_name}"
 
     def __repr__(self):
-        """Represent instance as a unique string."""
+        """
+        Returns a string representation of the User instance.
+
+        Returns:
+        - A string representing the User instance.
+        """
         return f"<User({self.username!r})>"

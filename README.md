@@ -2,6 +2,134 @@
 
 Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech
 
+**Quickstart for Teaching Team:**
+
+1. Clone the repo
+```bash
+git clone https://github.com/theuerc/interview_simulator
+```
+
+2. Run the following command in the root directory of the repo
+```bash
+docker-compose up flask-dev
+```
+
+3. Open another terminal instance and run the following commands:
+```bash
+docker-compose run --rm manage db init
+docker-compose run --rm manage db migrate
+docker-compose run --rm manage db upgrade
+```
+
+4. Modify the .env to include the path to a .json file with Google Credentials and OpenAI's API Key (also shown in .env.example): 
+```bash
+# Environment variable overrides for local development
+FLASK_APP=autoapp.py
+FLASK_DEBUG=1
+FLASK_ENV=development
+DATABASE_URL=sqlite:////tmp/dev.db
+GUNICORN_WORKERS=1
+LOG_LEVEL=debug
+SECRET_KEY=not-so-secret
+# In production, set to a higher number, like 31556926
+SEND_FILE_MAX_AGE_DEFAULT=0
+# API keys for ChatGPT, Whisper, and Google
+OPENAI_API_KEY=*
+GOOGLE_APPLICATION_CREDENTIALS=*.json
+```
+
+5. Make a dummy account on the website. These might work:
+```bash
+username: asdf
+email: asdf@gmail.com
+password: asdfasdf
+```
+
+6. Add a resume and transcript. These were made with ChatGPT:
+
+**Resume:**
+```
+JONATHAN MYERS
+Data Analyst
+Harvard University | Class of 2019
+Email: jonathan.myers@email.com | Phone: (123) 456-7890
+
+EDUCATION
+Harvard University, Cambridge, MA
+Bachelor of Science in Statistics, May 2019
+Relevant coursework: Data Analysis and Statistical Inference, Regression Analysis, Applied Time Series Analysis, Data Mining and Machine Learning, Bayesian Statistics.
+
+EXPERIENCE
+Data Analyst, ABC Corporation, Boston, MA
+June 2019 - Present
+
+Conducted data analysis and visualization to support strategic decision-making across the organization
+Developed and implemented predictive models to identify patterns and trends in customer behavior
+Created reports and dashboards to communicate insights to executive team and stakeholders
+Collaborated with cross-functional teams to identify opportunities for process improvement and efficiency gains
+Data Science Intern, XYZ Company, Cambridge, MA
+May 2018 - August 2018
+
+Conducted exploratory data analysis and modeling to support product development initiatives
+Developed predictive models to forecast sales and customer demand
+Created data visualizations and dashboards to communicate insights to stakeholders
+Conducted research to identify best practices and emerging trends in data science and analytics
+SKILLS
+
+Proficient in programming languages such as Python, R, and SQL
+Experience with data analysis and visualization tools such as Tableau and Power BI
+Knowledge of statistical modeling techniques and machine learning algorithms
+Strong analytical and problem-solving skills
+Excellent communication and collaboration skills
+AWARDS AND HONORS
+
+Dean's List, Harvard College, 2015-2019
+National Merit Scholarship Finalist, 2015
+Harvard College Research Program Grant Recipient, 2017
+REFERENCES
+Available upon request.
+```
+**Job Description**
+```
+Data Scientist with Bioethics Background
+
+SciCorp is a rapidly growing biotechnology company that focuses on developing innovative solutions to improve human health. We are seeking a highly motivated data scientist with a strong background in bioethics to join our team. The successful candidate will play a key role in developing and implementing data-driven solutions that address ethical issues in biotechnology research and development.
+
+Responsibilities:
+
+Design and implement data collection and analysis strategies to address ethical issues related to biotechnology research and development
+Develop predictive models to identify potential ethical issues and their impacts on the company's research and development initiatives
+Conduct ethical reviews of research proposals, including analyzing potential risks and benefits to human health, and proposing ethical solutions
+Collaborate with cross-functional teams to design and implement ethical guidelines and best practices for research and development initiatives
+Stay up-to-date with emerging trends and developments in bioethics and integrate this knowledge into the company's ethical policies and practices
+Communicate complex ethical issues and analyses to both technical and non-technical stakeholders, including regulatory bodies and the public
+Qualifications:
+
+PhD in bioethics, philosophy, or a related field
+Strong background in biotechnology research and development
+Experience in data science, including data collection, analysis, and modeling
+Knowledge of statistical analysis tools and programming languages such as Python or R
+Familiarity with regulatory frameworks related to biotechnology research and development, such as IRB and FDA regulations
+Excellent analytical and problem-solving skills
+Strong communication and collaboration skills
+Ability to work independently and as part of a team in a fast-paced environment
+We offer competitive compensation packages, flexible work schedules, and opportunities for growth and development. If you are passionate about using data science to address ethical challenges in biotechnology research and development, we encourage you to apply.
+
+To apply, please submit your CV, cover letter, and any relevant work samples to [insert email address].
+```
+
+7. Go to the interview page and click on the "Start Interview" button. Pretend you're being interviewed. Or don't. It's up to you.
+
+
+
+
+
+
+
+
+
+----------------
+--------------
 ## Docker Quickstart
 
 This app can be run completely using `Docker` and `docker-compose`. **Using Docker is recommended, as it guarantees the application is run using compatible versions of Python and Node**.

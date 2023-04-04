@@ -2,10 +2,28 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
 <div class="container">
-    <h1 class="mt-5">About</h1>
+    <h1 class="mt-5">About Interview Simulator</h1>
     <div class="row">
-      <p class="lead">This template was created by <a href="http://github.com/sloria/">Steven Loria</a> for use with the <a href="http://github.com/audreyr/cookiecutter/">cookiecutter</a> package by <a href="http://github.com/audreyr/">Audrey Roy</a>.</p>
+      <p class="lead">
+        Interview Simulator is an innovative platform designed to help students and recent graduates practice their interview skills in a gamified, interactive environment. We understand the challenges faced by many individuals when it comes to job interviews, and our goal is to help users overcome their anxiety, improve their communication skills, and increase their chances of securing their dream job.
+      </p>
+      <p class="lead">
+        By harnessing the power of advanced AI technologies like ChatGPT, Whisper, and Google Cloud Text-To-Speech, we have created a realistic job interview simulation that adapts to the user's specific needs. Our platform aims to offer the following features:
+      </p>
+      <ul>
+        <li>Customized Job Interview Context: Users can provide their resume and job description to tailor the interview experience to their desired position. (implemented)</li>
+        <li>Multiple Interview Types: Users can practice various interview formats, including technical and behavioral. (behavioral only for now)</li>
+        <li>Adjustable Interviewer Difficulty and Moods: Users can choose from different difficulty levels (easy, medium, hard) and interviewer moods (happy, indifferent, annoyed) to mimic real-world scenarios. (TBD)</li>
+        <li>Real-time Feedback and Evaluation: Our platform transcribes user responses, processes those responses in our ai interview coach, and provides real-time feedback. (implemented)</li>
+        <li>Text-to-Speech Output: The AI-generated interviewer's responses are delivered through Google Cloud Text-To-Speech, creating a more immersive experience. (implemented)</li>
+        <li>Progress Tracking and Leaderboard: Users can track their progress over time, access archives of previous questions and answers, and compare their performance with others on the platform. (TBD)</li>
+      </ul>
+      <p class="lead">
+        Job Interview Simulator aims to bridge the gap between academic success and real-world job opportunities. By offering a safe, interactive environment for users to hone their interview skills, we hope to empower individuals to overcome their challenges, boost their confidence, and ultimately, achieve their career goals.
+      </p>
+      <p class="lead">Join us on this exciting journey as we work towards helping students and recent graduates unlock their full potential and land their dream jobs!</p>
     </div>
 </div>
 {% endblock %}

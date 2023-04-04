@@ -53,8 +53,3 @@ class RegisterForm(FlaskForm):
         return True
 
 
-class ChatGPTForm(FlaskForm):
-    """ChatGPT interaction form."""
-
-    input_text = TextAreaField("Type your message:", validators=[DataRequired()])
-    submit = SubmitField("Send")
