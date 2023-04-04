@@ -61,7 +61,7 @@ docker-compose up flask-dev
 ```
 Once the login is functioning correctly, these are the next steps:
 
-6. Make a dummy account on the website. These might work:
+6. Make a dummy account on the website. These credentials might work:
 ```bash
 username: asdf
 email: asdf@gmail.com
