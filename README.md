@@ -9,19 +9,13 @@ Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech
 git clone https://github.com/theuerc/interview_simulator
 ```
 
-2. Run the following command in the root directory of the repo
+2. Run the following commands in the root directory of the repo
 ```bash
-docker-compose up flask-dev
+touch dev.db
+docker-compose up --build
 ```
 
-3. Open another terminal instance and run the following commands:
-```bash
-docker-compose run --rm manage db init
-docker-compose run --rm manage db migrate
-docker-compose run --rm manage db upgrade
-```
-
-4. Modify the .env to include the path to a .json file with Google Credentials and OpenAI's API Key (also shown in .env.example): 
+4. Copy a json with your Google Credentials into the project and modify the .env to include the path to a .json file with Google Credentials and an OpenAI API Key: 
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
@@ -34,8 +28,14 @@ SECRET_KEY=not-so-secret
 # In production, set to a higher number, like 31556926
 SEND_FILE_MAX_AGE_DEFAULT=0
 # API keys for ChatGPT, Whisper, and Google
-OPENAI_API_KEY=*
-GOOGLE_APPLICATION_CREDENTIALS=*.json
+OPENAI_API_KEY=[OPENAI_API_KEY]
+GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
+```
+
+3. Open another terminal instance and run the following commands in the root directory of the repo:
+```bash
+docker-compose run --rm manage db upgrade
+docker-compose up flask-dev
 ```
 
 5. Make a dummy account on the website. These might work:
@@ -133,7 +133,7 @@ To apply, please submit your CV, cover letter, and any relevant work samples to 
 
 
 
-**The next section is the original README.md file from the cookiecutter repo that I used for this project. I completed this in 3 days. It was the first time I used Flask, Docker, Javascript, html, pipenv, OpenAI's API, and Google's APIs.**
+**The next section is the original README.md file from the cookiecutter repo that I used for this project.**
 
 
 
