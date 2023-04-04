@@ -15,7 +15,7 @@ touch dev.db
 docker-compose up --build
 ```
 
-4. Copy a json with your Google Credentials into the project and modify the .env to include the path to a .json file with Google Credentials and an OpenAI API Key: 
+4. Copy a json with your Google Credentials into the project and modify the .env to include the path to that .json file and an OpenAI API Key: 
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
