@@ -9,11 +9,16 @@ Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech
 git clone https://github.com/theuerc/interview_simulator
 ```
 
+2. Run the following commands in the root directory of the repo:
+```bash
+docker-compose build flask-dev
+```
+
 2. Copy a json with your Google Credentials into the project create a .env file with the following command: 
 ```bash
 nano .env
 ```
-3. the .env should include the path to that json file and an OpenAI API Key. Copy the following in the .env file with the API keys and json paths filled in: 
+The .env file should include the path to that json file and an OpenAI API Key. Copy the following in the .env file with the API keys and json paths filled in: 
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
@@ -30,21 +35,18 @@ OPENAI_API_KEY=[OPENAI_API_KEY]
 GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
 ```
 
-4. At this point, you should be able to run the app with the following command:
+3. At this point, you should be able to run the app with the following command:
 ```bash
 docker-compose up flask-dev
 ```
-It will crash when you try to make an account. I'm still in the process of fixing that. It needs a database to store the accounts.
+It will crash when you try to make an account. To fix this, we need to make a database.
 
-
----
-## Defunkt steps: 
-
-5. Open another terminal instance and run the following commands in the root directory of the repo. This is supposed to create a database and run the app. It doesn't work yet:
+5. Run the following commands in the root directory of the repo:
 ```bash
 rm -rf dev.db # it erronously makes a directory instead of a file called dev.db when "docker-compose up flask-dev" is run
 touch dev.db
 docker-compose run --rm manage db upgrade
+docker-compose build flask-dev # I'm not sure why this is necessary, but it throws an error otherwise
 ```
 At this point the sqlite database should be created. You can check this by running the following command in the root directory:
 ```bash
@@ -53,21 +55,11 @@ sqlite> .tables
 alembic_version  roles            user_files       users 
 sqlite> .exit
 ```
-This is where it breaks. Theoretically, you should be able to run the app with the following command:
+Now the app should work when you run the following command:
 ```bash
 docker-compose up flask-dev
 ```
-But it doesn't work. This is the error message:
-```
- ⠿ Container interview_simulator-flask-dev-1  Created                                                                                                                                                0.0s
-Attaching to interview_simulator-flask-dev-1
-Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/host_mnt/Users/coultont/Documents/GitHub Projects/interview_simulator/dev.db" to rootfs at "/tmp/dev.db": mount /host_mnt/Users/coultont/Documents/GitHub Projects/interview_simulator/dev.db:/tmp/dev.db (via /proc/self/fd/14), flags: 0x5000: not a directory: unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type
-```
-This is likely an issue with the docker-compose.yml file, but I am not experienced enough with Docker to know how to fix it.
-
-
-----
-Once the login is functioning correctly, these would be the next steps:
+Once the login is functioning correctly, these are the next steps:
 
 6. Make a dummy account on the website. These might work:
 ```bash
@@ -153,18 +145,12 @@ To apply, please submit your CV, cover letter, and any relevant work samples to 
 
 
 
-
-
-
-
-
-
 ----------------
 
 
 
 
-**The next section is the original README.md file from the cookiecutter repo that I used for this project.**
+**The next section is the original README.md file from the [cookiecutter repo](https://github.com/cookiecutter-flask/cookiecutter-flask) that I used for this project.**
 
 
 
