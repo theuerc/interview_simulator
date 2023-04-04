@@ -2,27 +2,132 @@
 
 {% block content %}
 
-    <div class="container">
-        <h1>Welcome back, {{ current_user.username }}!</h1>
-        <p>Please press the button to begin your interview.</p>
-    
-        <h2>Talk to HiringManagerGPT</h2>
-        <button id="recordButton">Record</button>
-        <ul id="recordingsList"></ul>
+<div class="container">
+    <h1>Welcome back, {{ current_user.username }}!</h1>
+    <style>
+        .full-width-img {
+            width: 80%;
+            height: auto;
+        }
+    </style>
+    <img src="static/build/interviewer.jpeg" alt="Alex" class="full-width-img">
+    <p>Please press the button to begin your interview. A resume and job description are required.
+        <br>Upload a resume and job description <a href="{{ url_for('user.upload') }}">here</a>.
+        It takes about 10 seconds to load the game.
+    </p>
+    <button id="startGameButton">
+        <span id="loadingIcon" style="display:none;">
+            <img src="static/build/hourglass.jpg" alt="Loading...">
+        </span>
+        Start Game
+    </button>
+    <form id="transcribeForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    </form>
 
-        <form id="transcribeForm">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        </form>
+    <div id="gameContent" style="display: none;">
+        <!-- Add record buttons to the containers -->
+        <div id="introContainer">
+            <h3>Introduction</h3>
+            <div id="introResponse"></div>
+        </div>
+        <button id="recordButton1">Record</button>
+        <div id="responseDiv"></div>
+        <div id="question1Container">
+            <h3>Question 1</h3>
+            <div id="question1Response"></div>
+        </div>
+        <button id="recordButton2">Record</button>
+        <div id="responseDiv2"></div>
+        <div id="question2Container">
+            <h3>Question 2</h3>
+            <div id="question2Response"></div>
+        </div>
+        <button id="recordButton3">Record</button>
+        <div id="responseDiv3"></div>
+        <div id="question3Container">
+            <h3>Question 3</h3>
+            <div id="question3Response"></div>
+        </div>
+        <button id="recordButton4">Record</button>
+        <div id="responseDiv4"></div>
+    </div>
+    <div id="mainContent">
+        <!-- All the existing content goes here -->
+        <!-- ... -->
+    </div>
+    <script>
+        // Add this to your existing script
+        const startGameButton = document.getElementById('startGameButton');
+        const gameContent = document.getElementById('gameContent');
+        const mainContent = document.getElementById('mainContent');
 
-        <script>
-            const recordButton = document.getElementById('recordButton');
-            const recordingsList = document.getElementById('recordingsList');
+        const introContainer = document.getElementById('introContainer');
+        const question1Container = document.getElementById('question1Container');
+        const question2Container = document.getElementById('question2Container');
+        const question3Container = document.getElementById('question3Container');
 
-            let chunks = [];
-            let mediaRecorder;
+        let gameData;
 
-            recordButton.onclick = async () => {
-                if (recordButton.textContent === 'Record') {
+        const checkUploadedFiles = async () => {
+            const loadingIcon = document.getElementById('loadingIcon');
+            const response = await fetch('/users/check_uploads');
+            const data = await response.json();
+
+            if (data.uploaded) {
+                loadingIcon.style.display = 'inline-block';
+                const response = await fetch('/users/check_uploads');
+                const data = await response.json();
+                // Get the CSRF token from the HTML form
+                const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+                // Fetch the audios from the server
+                const gameResponse = await fetch('/users/start_game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ resume: data.resume, job_description: data.job_description })
+                });
+                gameData = await gameResponse.json();
+
+                // Create audio elements
+                const introAudio = new Audio(`data:audio/mp3;base64,${gameData.intro_audio}`);
+                const question1Audio = new Audio(`data:audio/mp3;base64,${gameData.question_1_audio}`);
+                const question2Audio = new Audio(`data:audio/mp3;base64,${gameData.question_2_audio}`);
+                const question3Audio = new Audio(`data:audio/mp3;base64,${gameData.question_3_audio}`);
+
+                // Add audio elements to the containers
+                introContainer.appendChild(introAudio);
+                introAudio.controls = true;
+
+                question1Container.appendChild(question1Audio);
+                question1Audio.controls = true;
+
+                question2Container.appendChild(question2Audio);
+                question2Audio.controls = true;
+
+                question3Container.appendChild(question3Audio);
+                question3Audio.controls = true;
+                // Show the game content and hide the main content
+                gameContent.style.display = 'block';
+                mainContent.style.display = 'none';
+            } else {
+                alert('Please upload your resume and job description first.');
+            }
+        };
+
+
+        // I'm going to copy paste the following code four times, one for each button
+
+        const recordButton = document.getElementById('recordButton1');
+        const recordingsList = document.getElementById('recordingsList');
+
+        let chunks = [];
+        let mediaRecorder;
+
+        recordButton.onclick = async () => {
+            if (recordButton.textContent === 'Record') {
                 // Request access to the microphone
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -37,12 +142,14 @@
 
                 // Update the button text and enable/disable buttons
                 recordButton.textContent = 'Stop';
-                recordingsList.innerHTML = '';
-                } else {
+            } else {
                 // Stop the MediaRecorder and process the recorded data
                 mediaRecorder.stop();
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(chunks, { type: 'audio/webm' });
+
+                    // log gameData
+                    console.log(gameData);
 
                     // Get the CSRF token from the HTML form
                     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
@@ -50,6 +157,7 @@
                     // Create a new FormData object and append the audio file 
                     const formData = new FormData();
                     formData.append('audio', blob, 'recording.webm');
+                    formData.append('question', gameData.intro);
 
                     fetch('/users/transcribe', {
                         method: 'POST',
@@ -58,21 +166,231 @@
                         },
                         body: formData,
                     })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Handle the transcribed text, e.g., display it on the page
-                        console.log(data.transcription);
-                    })
-                    .catch((error) => {
-                        console.error('Error uploading audio:', error);
-                    });
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Set the HTML of the new element to the transcribed text and ChatGPT response
+                            const responseDiv = document.getElementById('responseDiv');
+                            responseDiv.innerHTML = `
+        <p><strong>Question:</strong> ${gameData.intro}</p>
+        <p><strong>Your response:</strong> ${data.transcription}</p>
+        <p><strong>ChatGPT response:</strong> ${data.response}</p>
+    `;
+
+                            // Create an audio element with the received base64 audio
+                            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                            audio.play();
+                        })
 
                     // Reset the state
                     chunks = [];
                     recordButton.textContent = 'Record';
                 };
-                }
-            };
-        </script>
-    </div>
+            }
+        };
+
+
+        const recordButton2 = document.getElementById('recordButton2');
+        const recordingsList2 = document.getElementById('recordingsList2');
+
+        let chunks2 = [];
+        let mediaRecorder2;
+
+        recordButton2.onclick = async () => {
+            if (recordButton2.textContent === 'Record') {
+                // Request access to the microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Create a new MediaRecorder instance
+                mediaRecorder2 = new MediaRecorder(stream);
+
+                // Start recording and save the data to the 'chunks2' array
+                mediaRecorder2.start();
+                mediaRecorder2.ondataavailable = (e) => {
+                    chunks2.push(e.data);
+                };
+
+                // Update the button text and enable/disable buttons
+                recordButton2.textContent = 'Stop';
+            } else {
+                // Stop the MediaRecorder and process the recorded data
+                mediaRecorder2.stop();
+                mediaRecorder2.onstop = () => {
+                    const blob = new Blob(chunks2, { type: 'audio/webm' });
+
+                    // log gameData
+                    console.log(gameData);
+
+                    // Get the CSRF token from the HTML form
+                    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                    // Create a new FormData object and append the audio file 
+                    const formData = new FormData();
+                    formData.append('audio', blob, 'recording.webm');
+                    formData.append('question', gameData.question1);
+
+                    fetch('/users/transcribe', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Set the HTML of the new element to the transcribed text and ChatGPT response
+                            const responseDiv = document.getElementById('responseDiv2');
+                            responseDiv.innerHTML = `
+        <p><strong>Question:</strong> ${gameData.question_1}</p>
+        <p><strong>Your response:</strong> ${data.transcription}</p>
+        <p><strong>ChatGPT response:</strong> ${data.response}</p>
+    `;
+
+                            // Create an audio element with the received base64 audio
+                            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                            audio.play();
+                        })
+
+                    // Reset the state
+                    chunks2 = [];
+                    recordButton2.textContent = 'Record';
+                };
+            }
+        };
+
+        const recordButton3 = document.getElementById('recordButton3');
+        const recordingsList3 = document.getElementById('recordingsList3');
+        let chunks3 = [];
+        let mediaRecorder3;
+
+        recordButton3.onclick = async () => {
+            if (recordButton3.textContent === 'Record') {
+                // Request access to the microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Create a new MediaRecorder instance
+                mediaRecorder3 = new MediaRecorder(stream);
+
+                // Start recording and save the data to the 'chunks3' array
+                mediaRecorder3.start();
+                mediaRecorder3.ondataavailable = (e) => {
+                    chunks3.push(e.data);
+                };
+
+                // Update the button text and enable/disable buttons
+                recordButton3.textContent = 'Stop';
+            } else {
+                // Stop the MediaRecorder and process the recorded data
+                mediaRecorder3.stop();
+                mediaRecorder3.onstop = () => {
+                    const blob = new Blob(chunks3, { type: 'audio/webm' });
+
+                    // log gameData
+                    console.log(gameData);
+
+                    // Get the CSRF token from the HTML form
+                    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                    // Create a new FormData object and append the audio file 
+                    const formData = new FormData();
+                    formData.append('audio', blob, 'recording.webm');
+                    formData.append('question', gameData.question_2);
+
+                    fetch('/users/transcribe', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Set the HTML of the new element to the transcribed text and ChatGPT response
+                            const responseDiv3 = document.getElementById('responseDiv3');
+                            responseDiv3.innerHTML = `
+    <p><strong>Question:</strong> ${gameData.intro}</p>
+    <p><strong>Your response:</strong> ${data.transcription}</p>
+    <p><strong>ChatGPT response:</strong> ${data.response}</p>
+`;
+
+                            // Create an audio element with the received base64 audio
+                            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                            audio.play();
+                        })
+
+                    // Reset the state
+                    chunks3 = [];
+                    recordButton3.textContent = 'Record';
+                };
+            }
+        };
+        const recordButton4 = document.getElementById('recordButton4');
+        const recordingsList4 = document.getElementById('recordingsList4');
+
+        let chunks4 = [];
+        let mediaRecorder4;
+
+        recordButton4.onclick = async () => {
+            if (recordButton4.textContent === 'Record') {
+                // Request access to the microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Create a new MediaRecorder instance
+                mediaRecorder4 = new MediaRecorder(stream);
+
+                // Start recording and save the data to the 'chunks4' array
+                mediaRecorder4.start();
+                mediaRecorder4.ondataavailable = (e) => {
+                    chunks4.push(e.data);
+                };
+
+                // Update the button text and enable/disable buttons
+                recordButton4.textContent = 'Stop';
+            } else {
+                // Stop the MediaRecorder and process the recorded data
+                mediaRecorder4.stop();
+                mediaRecorder4.onstop = () => {
+                    const blob = new Blob(chunks4, { type: 'audio/webm' });
+
+                    // log gameData
+                    console.log(gameData);
+
+                    // Get the CSRF token from the HTML form
+                    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                    // Create a new FormData object and append the audio file
+                    const formData = new FormData();
+                    formData.append('audio', blob, 'recording.webm');
+                    formData.append('question', gameData.intro);
+
+                    fetch('/users/transcribe', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Set the HTML of the new element to the transcribed text and ChatGPT response
+                            const responseDiv = document.getElementById('responseDiv4');
+                            responseDiv.innerHTML = `
+        <p><strong>Question:</strong> ${gameData.question_3}</p>
+        <p><strong>Your response:</strong> ${data.transcription}</p>
+        <p><strong>ChatGPT response:</strong> ${data.response}</p>
+    `;
+
+                            // Create an audio element with the received base64 audio
+                            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                            audio.play();
+                        })
+
+                    // Reset the state
+                    chunks4 = [];
+                    recordButton4.textContent = 'Record';
+                };
+            }
+        };
+        startGameButton.addEventListener('click', checkUploadedFiles);
+    </script>
+</div>
 {% endblock %}
