@@ -133,7 +133,7 @@ To apply, please submit your CV, cover letter, and any relevant work samples to 
 
 
 
-**The next section is the original README.md file from the cookiecutter repo I used for this project. I completed this in 3 days. It was the first time I used Flask, Docker, Javascript, html, pipenv, OpenAI's API, and Google's APIs.**
+**The next section is the original README.md file from the cookiecutter repo that I used for this project. I completed this in 3 days. It was the first time I used Flask, Docker, Javascript, html, pipenv, OpenAI's API, and Google's APIs.**
 
 
 
