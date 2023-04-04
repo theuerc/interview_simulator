@@ -42,6 +42,8 @@ GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
 ```bash
 docker-compose up flask-dev
 ```
+Then go to http://localhost:8080/
+
 It will crash when you try to make an account. To fix this, we need to make a database.
 
 5. Run the following commands in the root directory of the repo:
@@ -62,6 +64,11 @@ Now the app should work when you run the following command:
 ```bash
 docker-compose up flask-dev
 ```
+
+Then go to http://localhost:8080/
+
+Check that the login is working correctly.
+
 Once the login is functioning correctly, these are the next steps:
 
 6. Make a dummy account on the website. These credentials might work:
