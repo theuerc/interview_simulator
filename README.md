@@ -63,7 +63,7 @@ But it doesn't work. This is the error message:
 Attaching to interview_simulator-flask-dev-1
 Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/host_mnt/Users/coultont/Documents/GitHub Projects/interview_simulator/dev.db" to rootfs at "/tmp/dev.db": mount /host_mnt/Users/coultont/Documents/GitHub Projects/interview_simulator/dev.db:/tmp/dev.db (via /proc/self/fd/14), flags: 0x5000: not a directory: unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type
 ```
-
+This is likely an issue with the docker-compose.yml file, but I am not experienced enough with Docker to know how to fix it.
 
 
 ----
