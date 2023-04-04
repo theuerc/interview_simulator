@@ -14,7 +14,7 @@ git clone https://github.com/theuerc/interview_simulator
 docker-compose build flask-dev
 ```
 
-2. Copy a json with your Google Credentials into the project create a .env file with the following command: 
+2. Copy a json with your Google Credentials into the project, then create a .env file with the following command: 
 ```bash
 nano .env
 ```
