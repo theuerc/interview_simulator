@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Services for the user app."""
+import base64
 import os
 import re
 from io import BytesIO
-import base64
-import openai
 
+import openai
 from google.cloud import texttospeech
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -48,13 +48,13 @@ def chat_gpt(question, answer):
     constructive criticism and feedback on the answer.
 
     Example:
-    >>> chat_gpt("Tell me about a time when you achieved a goal that you initially thought was out of reach.", "I achieved a goal by working hard.")
-    "Good effort, but try using the STAR method to structure your answer. Explain the situation, task, action, and result of the situation you're describing.
+    >>> chat_gpt("Tell me about a time when you achieved a goal that you initially thought was out of reach.", "I achieved a goal by working hard.") # noqa
+    "Good effort, but try using the STAR method to structure your answer. Explain the situation, task, action, and result of the situation you're describing. # noqa
     This will make your answer more comprehensive and easier for the interviewer to understand."
     """
 
     system_message = """
-    You are JudgeGPT. You provide constructive criticism to people who are answering interview questions. Be detailed and encouraging. Describe how to use the STAR method every time you reference it.
+    You are JudgeGPT. You provide constructive criticism to people who are answering interview questions. Be detailed and encouraging. Describe how to use the STAR method every time you reference it. # noqa
     """
     intro_example = read_file("interview_simulator/user/prompts/intro_example.txt")
     star_example = read_file("interview_simulator/user/prompts/star_example.txt")
@@ -81,12 +81,13 @@ def chat_gpt(question, answer):
 
 def gpt_questions(resume, job_description):
     """
+
     Uses OpenAI's GPT-3 model to generate interview questions for a job
     candidate based on their resume and a job listing.
 
     Args:
     - resume (str): A string containing the job candidate's resume.
-    - job_description (str): A string containing the job listing for the position the candidate is applying for.
+    - job_description (str): A string containing the job listing for the position the candidate is applying for. # noqa
 
     Returns:
     - A dictionary containing the generated interview questions and their corresponding audio transcripts.
@@ -109,11 +110,11 @@ def gpt_questions(resume, job_description):
     ```
     """
     system_message = """
-    You are a Hiring Manager. You work at the company who listed the job description, and you are interviewing a candidate with the resume above. 
+    You are a Hiring Manager. You work at the company who listed the job description, and you are interviewing a candidate with the resume above. # noqa
 
-    Briefly introduce yourself as Alex. Then generate 3 interview questions related to both the job description and the candidate's resume. 
+    Briefly introduce yourself as Alex. Then generate 3 interview questions related to both the job description and the candidate's resume. # noqa
 
-    Clearly delineate the introduction with # Introduction, and the questions with # Question X out of 3. Use the candidate’s name when appropriate.
+    Clearly delineate the introduction with # Introduction, and the questions with # Question X out of 3. Use the candidate’s name when appropriate. # noqa
     """
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -158,7 +159,8 @@ def gpt_questions(resume, job_description):
 
 def text_to_speech(text):
     """
-    Uses Google Cloud Text-to-Speech to convert the input text into
+
+    Uses Google Cloud Text-to-Speech to convert the input text into # noqa
     speech and returns the audio data in base64 encoded format.
 
     Args:
@@ -199,7 +201,8 @@ class NamedBytesIO(BytesIO):
 
 def transcribe_audio_with_whisper(audio_data):
     """
-    Uses the OpenAI Whisper ASR API to transcribe the
+
+    Uses the OpenAI Whisper ASR API to transcribe the # noqa
     input audio data and returns the transcription.
 
     Args:
