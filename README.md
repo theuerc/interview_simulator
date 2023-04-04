@@ -1,6 +1,6 @@
 # Interview Simulator
 
-Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech
+Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech to provide a realistic interview experience. This project requires [Docker](https://www.docker.com/). 
 
 **Quickstart for Teaching Team:**
 
@@ -14,7 +14,7 @@ git clone https://github.com/theuerc/interview_simulator
 docker-compose build flask-dev
 ```
 
-2. Copy a json with your Google Credentials into the project, then create a .env file with the following command: 
+3. Copy a json with your Google Credentials into the project, then create a .env file with the following command: 
 ```bash
 nano .env
 ```
@@ -35,7 +35,7 @@ OPENAI_API_KEY=[OPENAI_API_KEY]
 GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
 ```
 
-3. At this point, you should be able to run the app with the following command:
+4. At this point, you should be able to run the app with the following command:
 ```bash
 docker-compose up flask-dev
 ```
