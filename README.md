@@ -6,7 +6,7 @@ Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech to pro
 
 1. Clone the repo
 ```bash
-git clone https://gitfront.io/r/user-4518600/agiL5VMpFPex/interview_simulator.git
+git clone https://gitfront.io/r/user-4518600/7bzfPBQcxUdV/interview_simulator/
 
 # this is the github link, but I made this repo private, so it wont work unless you have access
 git clone https://github.com/theuerc/interview_simulator
@@ -14,14 +14,15 @@ git clone https://github.com/theuerc/interview_simulator
 
 2. Run the following commands in the root directory of the repo:
 ```bash
-docker-compose build flask-dev
-```
-
-3. Copy a json with your Google Credentials into the project, then create a .env file with the following command: 
-```bash
+# make the database file
+touch dev.db
+# copy the environment file
+cp .env.example .env
+# open the .env file
 nano .env
 ```
-The .env file should include the path to that json file and an OpenAI API Key. Copy the following in the .env file with the API keys and json paths filled in: 
+
+The .env file should include the path to your json file and OpenAI API key. The bracketed sections need to be replaced:
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
@@ -37,48 +38,36 @@ SEND_FILE_MAX_AGE_DEFAULT=0
 OPENAI_API_KEY=[OPENAI_API_KEY]
 GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
 ```
-
-4. At this point, you should be able to run the app with the following command:
+3. Once the dev.db file is created, google credentials are uploaded, and all of the required information is entered in the .env file, run the following commands:
 ```bash
-docker-compose up flask-dev
-```
-Then go to http://localhost:8080/
-
-It will crash when you try to make an account. To fix this, we need to make a database.
-
-5. Run the following commands in the root directory of the repo:
-```bash
-rm -rf dev.db # it erronously makes a directory instead of a file called dev.db when "docker-compose up flask-dev" is run
-touch dev.db
+docker-compose build flask-dev
 docker-compose run --rm manage db upgrade
-docker-compose build flask-dev # I'm not sure why this is necessary, but it throws an error otherwise
-```
-At this point the sqlite database should be created. You can check this by running the following command in the root directory:
-```bash
-sqlite3 dev.db
-sqlite> .tables
-alembic_version  roles            user_files       users 
-sqlite> .exit
-```
-Now the app should work when you run the following command:
-```bash
 docker-compose up flask-dev
 ```
-
 Then go to http://localhost:8080/
 
-Check that the login is working correctly.
 
-Once the login is functioning correctly, these are the next steps:
+    3.5 At this point the sqlite database should be created. You can check this by running the following command in the root directory:
+    ```bash
+    sqlite3 dev.db
+    sqlite> .tables
+    alembic_version  roles            user_files       users 
+    sqlite> .exit
+    ```
+    Now the app should work when you run the following command:
+    ```bash
+    docker-compose up flask-dev
+    ```
+    
 
-6. Make a dummy account on the website. These credentials might work:
+4. Make a dummy account on the website. These credentials might work:
 ```bash
 username: asdf
 email: asdf@gmail.com
 password: asdfasdf
 ```
 
-7. Add a resume and transcript. These were made with ChatGPT:
+5. Add a resume and transcript. These were made with ChatGPT:
 
 **Resume:**
 ```
@@ -151,8 +140,7 @@ We offer competitive compensation packages, flexible work schedules, and opportu
 To apply, please submit your CV, cover letter, and any relevant work samples to [insert email address].
 ```
 
-8. Go to the interview page and click on the "Start Interview" button. Pretend you're being interviewed. Or don't. It's up to you.
-
+6. Go to the interview page and click on the "Start Interview" button. It will take about 10 seconds to load, and to reply to the interviewer you need to have the microphone in your browser enabled. ChatGPT responses will generate with constructive feedback after it transcribes your voice.
 
 
 ----------------
