@@ -46,8 +46,7 @@ docker-compose up flask-dev
 ```
 Then go to http://localhost:8080/
 
-
-    3.5 At this point the sqlite database should be created. You can check this by running the following command in the root directory:
+At this point the sqlite database should be created. You can check this by running the following command in the root directory, or you can just move to the next step:
     ```bash
     sqlite3 dev.db
     sqlite> .tables
