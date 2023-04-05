@@ -22,7 +22,7 @@ cp .env.example .env
 nano .env
 ```
 
-The .env file should include the path to your json file and OpenAI API key. The bracketed sections need to be replaced:
+The .env file should include a path to a json file with your Google credentials and an OpenAI API key. The bracketed sections need to be replaced:
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
