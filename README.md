@@ -6,7 +6,7 @@ Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech to pro
 
 1. Clone the repo
 ```bash
-git clone https://gitfront.io/r/user-3333581/8WWEbmiQd3o5/interview-simulator/
+git clone https://gitfront.io/r/user-3333581/8WWEbmiQd3o5/interview-simulator.git
 
 # this is the github link, but I made this repo private, so it wont work unless you have access
 git clone https://github.com/theuerc/interview_simulator
