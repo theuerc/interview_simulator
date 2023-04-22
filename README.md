@@ -2,6 +2,8 @@
 
 Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech to provide a realistic interview experience. This project requires [Docker](https://www.docker.com/). 
 
+[Slides for Project](https://docs.google.com/presentation/d/1KB1kcjIX-fMeYVFhmycTHC8guxhRkxVCKjnwCXTr2C8/edit#slide=id.p)
+
 **Quickstart for Teaching Team:**
 
 1. Clone the repo
