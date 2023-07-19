@@ -39,6 +39,7 @@ google-cloud-texttospeech = "*"
 black = "*"
 mpg123 = "*"
 regex = "*"
+pandas = "*"
 
 [dev-packages]
 # Testing

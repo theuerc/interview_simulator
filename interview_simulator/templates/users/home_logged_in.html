@@ -15,6 +15,25 @@
         <br>Upload a resume and job description <a href="{{ url_for('user.upload') }}">here</a>.
         It takes about 10 seconds to load the game.
     </p>
+
+    <div class="container">
+        <h2>Add a Question</h2>
+        <form action="{{ url_for('user.add_question') }}" method="POST" id="add-question-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="form-group">
+                <label for="questionText">Question:</label>
+                <input type="text" class="form-control" id="questionText" name="question_text" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Question</button>
+        </form>
+    </div>
+    <div class="container">
+        <h2>User Questions</h2>
+        <div id="user_questions_table_wrapper">
+            {{ user_questions_html|safe }}
+        </div>
+    </div>
+
     <button id="startGameButton">
         <span id="loadingIcon" style="display:none;">
             <img src="static/build/hourglass.jpg" alt="Loading...">
@@ -158,7 +177,7 @@
                         // Get the CSRF token from the HTML form
                         const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
-                        // Create a new FormData object and append the audio file 
+                        // Create a new FormData object and append the audio file
                         const formData = new FormData();
                         formData.append('audio', blob, 'recording.webm');
                         formData.append('question', gameData[questionKey]);
@@ -201,5 +220,101 @@
 
         startGameButton.addEventListener('click', checkUploadedFiles);
     </script>
+<script>
+    document.getElementById("add-question-form").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  var form = event.target;
+  var formData = new FormData(form);
+
+  fetch("{{ url_for('user.add_question') }}", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      var questionId = data["question_id"];
+      var questionText = data["question_text"];
+
+      if (questionId !== null) {
+        var table = document.getElementById("user_questions_table");
+        var row = table.insertRow(-1);
+        row.setAttribute("id", `question-row-${questionId}`);
+        row.insertCell(0).innerText = questionId;
+        row.insertCell(1).innerText = questionText;
+
+        // Create the delete button
+        var deleteButton = document.createElement("button");
+        deleteButton.innerText = "Delete";
+        deleteButton.classList.add("delete-btn");
+        deleteButton.setAttribute("data-question-id", questionId);
+
+        // Add the event listener to the delete button
+        deleteButton.addEventListener("click", function () {
+          const questionId = this.getAttribute("data-question-id");
+          deleteQuestion(questionId);
+        });
+
+        // Add the delete button to the row
+        var deleteCell = row.insertCell(2);
+        deleteCell.appendChild(deleteButton);
+      }
+    });
+});
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  addDeleteEventListeners();
+});
+
+function addDeleteEventListeners() {
+  const deleteButtons = document.getElementsByClassName("delete-btn");
+  for (let i = 0; i < deleteButtons.length; i++) {
+    deleteButtons[i].addEventListener("click", function () {
+      const questionId = this.getAttribute("data-question-id");
+      deleteQuestion(questionId);
+    });
+  }
+}
+
+async function deleteQuestion(questionId) {
+  try {
+    const response = await fetch("/users/delete_question", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.getElementsByName("csrf_token")[0].value,
+      },
+      body: JSON.stringify({ question_id: questionId }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById("user_questions_table_wrapper").innerHTML = data.user_questions_html;
+      // Re-add event listeners for delete buttons in the updated table
+      addDeleteEventListeners();
+    } else {
+      console.error("Failed to delete question");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+// Get selected questions
+function getSelectedQuestions() {
+  const checkboxes = document.getElementsByClassName("checkmark");
+  const selectedQuestions = [];
+
+  for (let i = 0; i < checkboxes.length; i++) {
+    if (checkboxes[i].checked) {
+      const questionId = checkboxes[i].getAttribute("data-question-id");
+      selectedQuestions.push(questionId);
+    }
+  }
+  return selectedQuestions;
+}
+</script>
 </div>
 {% endblock %}

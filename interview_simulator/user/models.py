@@ -43,6 +43,32 @@ class UserFile(PkModel):
         self.user = user
 
 
+class UserQuestion(PkModel):
+    """A question created by a user."""
+
+    __tablename__ = "user_questions"
+    question_text = Column(db.Text, nullable=False)
+    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    updated_at = Column(db.DateTime, nullable=True, onupdate=dt.datetime.utcnow)
+    user_id = reference_col("users", nullable=False)
+    user = relationship("User", backref="user_questions")
+
+    def __init__(self, question_text, user, **kwargs):
+        """
+        Initializes a new instance of the UserQuestion.
+
+        Args:
+        - question_text (str): The content of the question.
+        - user (User): The user who created the question.
+
+        Returns:
+        - None
+        """
+        super(UserQuestion, self).__init__(**kwargs)
+        self.question_text = question_text
+        self.user = user
+
+
 class Role(PkModel):
     """A role for a user."""
 
