@@ -8,7 +8,7 @@ tasks:
   - name: Prepare development environment
     before: |
       touch dev.db
-      cp .env.example
+      cp .env.example .env
       python shell_scripts/add_secret_json.py "$GOOGLE_JSON_FILENAME" "$GOOGLE_JSON_VALUE"
       sed -i "s/\[OPENAI_API_KEY\]/$OPENAI_API_KEY/" .env
       sed -i "s/\[key.json]/$GOOGLE_JSON_FILENAME/" .env
