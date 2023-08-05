@@ -1,6 +1,6 @@
 """Write google secret json for gitpod initialization"""
-import json
 import argparse
+import json
 
 def write_to_json(filename, dic_str):
     """write string to json"""
