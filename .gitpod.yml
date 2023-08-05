@@ -21,18 +21,17 @@ tasks:
       npm install
       npm run-script build
     command: |
+      pipenv install
+      npm install
       npm start
     
-  - name: Terminal
-    command: |
-      echo 'use this shell'
-
 vscode:
   extensions:
     - ms-python.python
     - yzhang.markdown-all-in-one
     - eamodio.gitlens
     - lextudio.restructuredtext
+    - GitHub.copilot
 
 github:
   prebuilds:
