@@ -21,11 +21,11 @@ tasks:
       npm install
       npm run-script build
     command: |
-      echo 'success'
-  
-  - name: Start Server
-    command: |
       npm start
+    
+  - name: Terminal
+    command: |
+      echo 'use this shell'
 
 vscode:
   extensions:
