@@ -1,27 +1,30 @@
 # Interview Simulator
 
-Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech
+Interview simulator that uses ChatGPT, Whisper, and Google Text-to-Speech to provide a realistic interview experience. This project requires [Docker](https://www.docker.com/). 
+
+[Slides for Project](https://docs.google.com/presentation/d/1KB1kcjIX-fMeYVFhmycTHC8guxhRkxVCKjnwCXTr2C8/edit#slide=id.p)
 
 **Quickstart for Teaching Team:**
 
 1. Clone the repo
 ```bash
+git clone https://gitfront.io/r/user-3333581/8WWEbmiQd3o5/interview-simulator.git
+
+# this is the github link, but I made this repo private, so it wont work unless you have access
 git clone https://github.com/theuerc/interview_simulator
 ```
 
-2. Run the following command in the root directory of the repo
+2. Run the following commands in the root directory of the repo:
 ```bash
-docker-compose up flask-dev
+# make the database file
+touch dev.db
+# copy the environment file
+cp .env.example .env
+# open the .env file
+nano .env
 ```
 
-3. Open another terminal instance and run the following commands:
-```bash
-docker-compose run --rm manage db init
-docker-compose run --rm manage db migrate
-docker-compose run --rm manage db upgrade
-```
-
-4. Modify the .env to include the path to a .json file with Google Credentials and OpenAI's API Key (also shown in .env.example): 
+The .env file should include a path to a json file with your Google credentials and an OpenAI API key. The bracketed sections need to be replaced:
 ```bash
 # Environment variable overrides for local development
 FLASK_APP=autoapp.py
@@ -34,18 +37,34 @@ SECRET_KEY=not-so-secret
 # In production, set to a higher number, like 31556926
 SEND_FILE_MAX_AGE_DEFAULT=0
 # API keys for ChatGPT, Whisper, and Google
-OPENAI_API_KEY=*
-GOOGLE_APPLICATION_CREDENTIALS=*.json
+OPENAI_API_KEY=[OPENAI_API_KEY]
+GOOGLE_APPLICATION_CREDENTIALS=[PATH/TO/GOOGLE/KEY.JSON]
 ```
+3. Once the dev.db file is created, google credentials are uploaded, and all of the required information is entered in the .env file, run the following commands:
+```bash
+docker-compose build flask-dev
+docker-compose run --rm manage db upgrade
+docker-compose up flask-dev
+```
+Then go to http://localhost:8080/
 
-5. Make a dummy account on the website. These might work:
+At this point a sqlite database should be created. You can check this by running the following command in the root directory, or you can just move to the next step:
+```bash
+sqlite3 dev.db
+sqlite> .tables
+alembic_version  roles            user_files       users 
+sqlite> .exit
+```
+    
+
+4. Make a dummy account on the website. These credentials might work:
 ```bash
 username: asdf
 email: asdf@gmail.com
 password: asdfasdf
 ```
 
-6. Add a resume and transcript. These were made with ChatGPT:
+5. Add a resume and transcript. These were made with ChatGPT:
 
 **Resume:**
 ```
@@ -118,14 +137,7 @@ We offer competitive compensation packages, flexible work schedules, and opportu
 To apply, please submit your CV, cover letter, and any relevant work samples to [insert email address].
 ```
 
-7. Go to the interview page and click on the "Start Interview" button. Pretend you're being interviewed. Or don't. It's up to you.
-
-
-
-
-
-
-
+6. Go to the interview page and click on the "Start Interview" button. It will take about 10 seconds to load, and to reply to the interviewer you need to have the microphone in your browser enabled. ChatGPT responses will generate with constructive feedback after it transcribes your voice.
 
 
 ----------------
@@ -133,7 +145,7 @@ To apply, please submit your CV, cover letter, and any relevant work samples to 
 
 
 
-**The next section is the original README.md file from the cookiecutter repo that I used for this project. I completed this in 3 days. It was the first time I used Flask, Docker, Javascript, html, pipenv, OpenAI's API, and Google's APIs.**
+**The next section is the original README.md file from the [cookiecutter repo](https://github.com/cookiecutter-flask/cookiecutter-flask) that I used for this project.**
 
 
 
