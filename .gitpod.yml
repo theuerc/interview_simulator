@@ -31,7 +31,6 @@ vscode:
     - yzhang.markdown-all-in-one
     - eamodio.gitlens
     - lextudio.restructuredtext
-    - GitHub.copilot
 
 github:
   prebuilds:
