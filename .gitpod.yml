@@ -5,7 +5,41 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: npm install && npm run build
-    command: npm run start
+  - name: Prepare development environment
+    before: |
+      touch dev.db
+      cp .env.example
+      python shell_scripts/add_secret_json.py "$GOOGLE_JSON_FILENAME" "$GOOGLE_JSON_VALUE"
+      sed -i "s/\[OPENAI_API_KEY\]/$OPENAI_API_KEY/" .env
+      sed -i "s/\[key.json]/$GOOGLE_JSON_FILENAME/" .env
+    init: |
+      docker-compose build flask-dev
+      docker-compose run --rm manage db upgrade
+    command: |
+      docker-compose up flask-dev
 
+vscode:
+  extensions:
+    - ms-python.python
+    - yzhang.markdown-all-in-one
+    - eamodio.gitlens
+    - lextudio.restructuredtext
 
+github:
+  prebuilds:
+    # enable for main/default branch
+    main: true
+    # enable for other branches (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a check to pull requests (defaults to true)
+    addCheck: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+    addComment: true
+    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+    addBadge: true
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: true
