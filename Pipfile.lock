@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96d9c9be2e269675f30b549aee26f5d0d9fb57e7362bfd563515c4de84cef93f"
+            "sha256": "1507e6df3030ab36ead180487d07afd475952aac213556902004264c27104346"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -658,7 +658,7 @@
                 "sha256:f82d4d717d8ef19188687aa32b8363e96062911e63ba22a0cff7802a8e58e5f1",
                 "sha256:fc3a569657468b6f3fb60587e48356fe512c1754ca05a564f11366ac9e306526"
             ],
-            "markers": "platform_python_implementation == 'CPython'",
+            "markers": "python_version >= '3' and platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))",
             "version": "==2.0.2"
         },
         "grpcio": {
@@ -970,7 +970,7 @@
                 "sha256:fdcd09713cbd42480740d2fe29c990f7fbd885a67efc328aa8be6ee3e9f76a6b"
             ],
             "markers": "python_version >= '3.11'",
-            "version": "==1.22.3"
+            "version": "==1.22.2"
         },
         "protobuf": {
             "hashes": [
@@ -1247,11 +1247,11 @@
         },
         "supervisor": {
             "hashes": [
-                "sha256:40dc582ce1eec631c3df79420b187a6da276bbd68a4ec0a8f1f123ea616b97a2",
-                "sha256:bbae57abf74e078fe0ecc9f30068b6da41b840546e233ef1e659a12e4c875af6"
+                "sha256:2ecaede32fc25af814696374b79e42644ecaba5c09494c51016ffda9602d0f08",
+                "sha256:34761bae1a23c58192281a5115fb07fbf22c9b0133c08166beffc70fed3ebc12"
             ],
             "index": "pypi",
-            "version": "==4.2.4"
+            "version": "==4.2.5"
         },
         "tqdm": {
             "hashes": [
