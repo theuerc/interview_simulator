@@ -56,7 +56,10 @@ def chat_gpt(question, answer):
     system_message = """
     You are JudgeGPT. You provide constructive criticism to people who are answering interview questions. Be detailed and encouraging. Describe how to use the STAR method every time you reference it. # noqa
     """
+    # from UMSI CDO resources https://docs.google.com/document/d/16HY__RHplZMBGhWmM6OavMvXXwiuNMxSPsfGCTIKd-o/edit
+    # only UofM students can access this document
     intro_example = read_file("interview_simulator/user/prompts/intro_example.txt")
+    # from https://www.themuse.com/advice/star-interview-method
     star_example = read_file("interview_simulator/user/prompts/star_example.txt")
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

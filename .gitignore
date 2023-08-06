@@ -59,6 +59,7 @@ env/
 
 # API Keys
 silken-waters-*.json
+key.json
 
 # Audio Files
 *.mp3
